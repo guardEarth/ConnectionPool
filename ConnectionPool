@@ -1,3 +1,709 @@
-一个连接池和线程池，性能超过了HikariCP
-下载地址：
-https://github.com/guardEarth/ConnectionPool/releases/download/download/EarthTech.rar
+import java.sql.Array;
+ import java.sql.Blob;
+ import java.sql.CallableStatement;
+ import java.sql.Clob;
+ import java.sql.Connection;
+ import java.sql.DatabaseMetaData;
+ import java.sql.DriverManager;
+ import java.sql.NClob;
+ import java.sql.PreparedStatement;
+ import java.sql.SQLClientInfoException;
+ import java.sql.SQLException;
+ import java.sql.SQLWarning;
+ import java.sql.SQLXML;
+ import java.sql.Savepoint;
+ import java.sql.Statement;
+ import java.sql.Struct;
+ import java.util.Map;
+ import java.util.Properties;
+ import java.util.concurrent.Executor;
+
+ public class ConnectionPool
+ {
+     private final EarthTech.FastList<ConnectionProxy2> list = new EarthTech.FastList<ConnectionProxy2>();
+ 
+     public ConnectionPool(int initSize,String url,String username,String password,String driverClassName)
+     {
+    	 if(initSize < 1)
+	     {
+	           initSize = 50;
+         }
+	     Connection conn = null;
+         for(int i=0;i<initSize;i++)
+         {
+	         try{
+	        	 if(i == 0)
+      	         {
+		             Class.forName(driverClassName);
+	             }
+	             conn = DriverManager.getConnection(url,username,password);
+	             System.out.println("aa");
+	             ConnectionProxy2 c = (ConnectionProxy2) conn;
+	             System.out.println("bb");
+	             c.conn = conn;
+	             list.add(c);
+//	             if(false == conn.isClosed())
+//	             {
+////			         list.add(new ConnectionProxy(conn));
+////			         list.add(new ConnectionProxy2(conn));
+//		         }
+	         }
+	         catch (ClassNotFoundException e) {e.printStackTrace();}
+	         catch (SQLException e) {e.printStackTrace();}
+	       }
+     }
+ 
+     public Connection getConnection()
+     {
+         return list.take();
+     }
+
+     public Connection getConnectionInterruptibly()
+     {
+         return list.takeInterruptibly();
+     }
+
+     public Connection getConnection(long time)
+     {
+//    	 ConnectionProxy2 a =new ConnectionProxy2();
+         return list.take(time);
+     }
+ 
+     @SuppressWarnings("unused")
+	private class ConnectionProxy6 extends ConnectionProxy2
+     {
+
+		public ConnectionProxy6(Connection c) {
+			super(c);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public Statement createStatement() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CallableStatement prepareCall(String sql) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String nativeSQL(String sql) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setAutoCommit(boolean autoCommit) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean getAutoCommit() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void commit() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void rollback() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void close() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isClosed() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public DatabaseMetaData getMetaData() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setReadOnly(boolean readOnly) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isReadOnly() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setCatalog(String catalog) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getCatalog() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setTransactionIsolation(int level) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public int getTransactionIsolation() throws SQLException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public SQLWarning getWarnings() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void clearWarnings() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+				throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)
+				throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Map<String, Class<?>> getTypeMap() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setHoldability(int holdability) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public int getHoldability() throws SQLException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Savepoint setSavepoint() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Savepoint setSavepoint(String name) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void rollback(Savepoint savepoint) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+				throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+				int resultSetHoldability) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
+				int resultSetHoldability) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Clob createClob() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Blob createBlob() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public NClob createNClob() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public SQLXML createSQLXML() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isValid(int timeout) throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setClientInfo(String name, String value) throws SQLClientInfoException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setClientInfo(Properties properties) throws SQLClientInfoException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getClientInfo(String name) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Properties getClientInfo() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setSchema(String schema) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getSchema() throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void abort(Executor executor) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public int getNetworkTimeout() throws SQLException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public <T> T unwrap(Class<T> iface) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isWrapperFor(Class<?> iface) throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+    	 
+     }
+     
+     private static abstract class ConnectionProxy2 implements Connection
+     {
+    	 private Connection conn;
+    	 
+    	 public ConnectionProxy2(Connection c)
+    	 {
+    		 conn = c;
+    	 }
+    	 
+    	 public void close() throws SQLException
+         {
+ 		    System.out.println("a");
+ 	    } 
+     }
+     
+     private class ConnectionProxy implements Connection
+     {
+        private Connection conn;
+ 	
+        private ConnectionProxy(Connection c)
+	    {
+		    conn = c;
+	    }
+
+	    public void close() throws SQLException
+        {
+//		    list.add(this);
+	    }
+
+	    public Statement createStatement() throws SQLException
+	    {
+		    return conn.createStatement();
+        }
+
+	    public PreparedStatement prepareStatement(String sql) throws SQLException
+	    {
+		    return conn.prepareStatement(sql);
+	    }
+
+        public DatabaseMetaData getMetaData() throws SQLException
+        {
+	        return conn.getMetaData();
+        }
+
+		public <T> T unwrap(Class<T> iface) throws SQLException
+		{
+			return conn.unwrap(iface);
+		}
+
+		public boolean isWrapperFor(Class<?> iface) throws SQLException
+		{
+			return conn.isWrapperFor(iface);
+		}
+
+		public CallableStatement prepareCall(String sql) throws SQLException
+		{
+			return conn.prepareCall(sql);
+		}
+
+		public String nativeSQL(String sql) throws SQLException
+		{
+			return conn.nativeSQL(sql);
+		}
+
+		public void setAutoCommit(boolean autoCommit) throws SQLException
+		{
+			conn.setAutoCommit(autoCommit);
+		}
+
+		public boolean getAutoCommit() throws SQLException
+		{
+			return conn.getAutoCommit();
+		}
+
+		public void commit() throws SQLException
+		{
+			conn.commit();
+		}
+
+		public void rollback() throws SQLException
+		{
+			conn.rollback();
+		}
+
+		public boolean isClosed() throws SQLException
+		{
+			return conn.isClosed();
+		}
+
+		public void setReadOnly(boolean readOnly) throws SQLException
+		{
+			conn.setReadOnly(readOnly);
+		}
+
+		public boolean isReadOnly() throws SQLException
+		{
+			return conn.isReadOnly();
+		}
+
+		public void setCatalog(String catalog) throws SQLException
+		{
+			conn.setCatalog(catalog);
+		}
+
+		public String getCatalog() throws SQLException
+		{
+			return conn.getCatalog();
+		}
+
+		public void setTransactionIsolation(int level) throws SQLException
+		{
+			conn.setTransactionIsolation(level);
+		}
+
+		public int getTransactionIsolation() throws SQLException
+		{
+			return conn.getTransactionIsolation();
+		}
+
+		public SQLWarning getWarnings() throws SQLException
+		{
+			return conn.getWarnings();
+		}
+
+		public void clearWarnings() throws SQLException
+		{
+			conn.clearWarnings();
+		}
+
+		public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException
+		{
+			return conn.createStatement(resultSetType,resultSetConcurrency);
+		}
+
+		public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)throws SQLException
+		{
+			return conn.prepareStatement(sql,resultSetType,resultSetConcurrency);
+		}
+
+		public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)throws SQLException
+		{
+			return conn.prepareCall(sql,resultSetType,resultSetConcurrency);
+		}
+
+		public Map<String, Class<?>> getTypeMap() throws SQLException
+		{
+			return conn.getTypeMap();
+		}
+
+		public void setTypeMap(Map<String, Class<?>> map) throws SQLException
+		{
+			conn.setTypeMap(map);
+		}
+
+		public void setHoldability(int holdability) throws SQLException
+		{
+			conn.setHoldability(holdability);
+		}
+
+		public int getHoldability() throws SQLException
+		{
+			return conn.getHoldability();
+		}
+
+		public Savepoint setSavepoint() throws SQLException
+		{
+			return conn.setSavepoint();
+		}
+
+		public Savepoint setSavepoint(String name) throws SQLException
+		{
+			return conn.setSavepoint(name);
+		}
+
+		public void rollback(Savepoint savepoint) throws SQLException
+		{
+			conn.rollback(savepoint);
+		}
+
+		public void releaseSavepoint(Savepoint savepoint) throws SQLException
+		{
+			conn.releaseSavepoint(savepoint);
+		}
+
+		public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)throws SQLException
+		{
+			return conn.createStatement(resultSetType,resultSetConcurrency,resultSetHoldability);
+		}
+
+		public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,int resultSetHoldability) throws SQLException
+		{
+			return conn.prepareStatement(sql,resultSetType,resultSetConcurrency,resultSetHoldability) ;
+		}
+
+		public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,int resultSetHoldability) throws SQLException
+		{
+			return conn.prepareCall(sql,resultSetType,resultSetConcurrency,resultSetHoldability);
+		}
+
+		public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException
+		{
+			return conn.prepareStatement(sql,autoGeneratedKeys);
+		}
+
+		public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException
+		{
+			return conn.prepareStatement(sql,columnIndexes);
+		}
+
+		public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException
+		{
+			return conn.prepareStatement(sql,columnNames);
+		}
+
+		public Clob createClob() throws SQLException
+		{
+			return conn.createClob();
+		}
+
+		public Blob createBlob() throws SQLException
+		{
+			return conn.createBlob();
+		}
+
+		public NClob createNClob() throws SQLException
+		{
+			return conn.createNClob();
+		}
+
+		public SQLXML createSQLXML() throws SQLException
+		{
+			return conn.createSQLXML();
+		}
+
+		public boolean isValid(int timeout) throws SQLException
+		{
+			return conn.isValid(timeout);
+		}
+
+		public void setClientInfo(String name, String value) throws SQLClientInfoException
+		{
+			conn.setClientInfo(name,value);
+		}
+
+		public void setClientInfo(Properties properties) throws SQLClientInfoException
+		{
+			conn.setClientInfo(properties);
+		}
+
+		public String getClientInfo(String name) throws SQLException
+		{
+			return conn.getClientInfo(name);
+		}
+
+		public Properties getClientInfo() throws SQLException
+		{
+			return conn.getClientInfo();
+		}
+
+		public Array createArrayOf(String typeName, Object[] elements) throws SQLException
+		{
+			return conn.createArrayOf(typeName,elements);
+		}
+
+		public Struct createStruct(String typeName, Object[] attributes) throws SQLException
+		{
+			return conn.createStruct(typeName, attributes);
+		}
+
+		public void setSchema(String schema) throws SQLException
+		{
+			conn.setSchema(schema);
+		}
+
+		public String getSchema() throws SQLException
+		{
+			return conn.getSchema();
+		}
+
+		public void abort(Executor executor) throws SQLException
+		{
+			conn.abort(executor);
+		}
+
+		public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+		{
+			conn.setNetworkTimeout(executor,milliseconds);
+		}
+
+		public int getNetworkTimeout() throws SQLException
+		{
+			return conn.getNetworkTimeout();
+		}
+ 
+        //Use IDE to automatically complete the remaining methods
+ 	    //剩余方法用IDE自动补全即可
+     }
+ }
